@@ -1,8 +1,18 @@
+import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final ImagePicker _picker = ImagePicker();
+
+  File? _image;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,9 +23,16 @@ class HomeScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text(
+            _image != null
+                ? Image.file(
+                    _image!,
+                    width: 250,
+                    height: 250,
+                    fit: BoxFit.cover,
+                  )            
+            :  const Text(
               "😊",
-              style: TextStyle(fontSize: 80),
+              style: TextStyle(fontSize: 80), 
             ),
             const SizedBox(height: 20),
             const Text(
@@ -24,7 +41,7 @@ class HomeScreen extends StatelessWidget {
             ),
             const SizedBox(height: 40),
             ElevatedButton.icon(
-              onPressed: () {},
+              onPressed: _pickImage,
               icon: const Icon(Icons.camera_alt),
               label: const Text("写真を撮る"),
             ),
@@ -38,4 +55,16 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
+
+  Future<void> _pickImage() async {
+    final XFile? pickedFile = await _picker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }  
 }
