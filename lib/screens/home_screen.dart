@@ -1,8 +1,9 @@
 import 'dart:io';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
+import '../services/image_service.dart';
 
 class HomeScreen extends StatefulWidget {
+
   const HomeScreen({super.key});
 
   @override
@@ -10,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final ImagePicker _picker = ImagePicker();
+  final _imageService = ImageService();
 
   File? _image;
   @override
@@ -57,14 +58,12 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _pickImage() async {
-    final XFile? pickedFile = await _picker.pickImage(
-      source: ImageSource.camera,
-    );
+    final image = await _imageService.pickImageFromCamera();
 
-    if (pickedFile != null) {
+    if (image != null) {
       setState(() {
-        _image = File(pickedFile.path);
+        _image = image;
       });
     }
-  }  
+  }
 }
