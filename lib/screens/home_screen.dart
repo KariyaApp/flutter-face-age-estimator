@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import '../services/image_service.dart';
+import '../services/face_detection_service.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -12,6 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final _imageService = ImageService();
+  final _faceDetectionService = FaceDetectionService();
 
   File? _image;
   @override
@@ -61,6 +63,10 @@ class _HomeScreenState extends State<HomeScreen> {
     final image = await _imageService.pickImageFromCamera();
 
     if (image != null) {
+      //顔の切り出し
+      final faces = await _faceDetectionService.detectFaces(image);      
+      print("顔の数: ${faces.length}");
+      
       setState(() {
         _image = image;
       });
