@@ -16,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _faceDetectionService = FaceDetectionService();
 
   File? _image;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,11 +66,17 @@ class _HomeScreenState extends State<HomeScreen> {
     if (image != null) {
       //顔の切り出し
       final faces = await _faceDetectionService.detectFaces(image);      
-      print("顔の数: ${faces.length}");
+      debugPrint("顔の数: ${faces.length}");
       
       setState(() {
         _image = image;
       });
     }
+  }
+  
+  @override
+  void dispose() {
+    _faceDetectionService.dispose();
+    super.dispose();
   }
 }
