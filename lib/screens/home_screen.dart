@@ -2,6 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import '../services/image_service.dart';
 import '../services/face_detection_service.dart';
+import '../models/age_result.dart';
+import '../services/face_crop_service.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -14,8 +16,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final _imageService = ImageService();
   final _faceDetectionService = FaceDetectionService();
+  final _faceCropService = FaceCropService();
 
   File? _image;
+  AgeResult? _result;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +42,14 @@ class _HomeScreenState extends State<HomeScreen> {
               "😊",
               style: TextStyle(fontSize: 80), 
             ),
+            if (_result != null)
+              Text(
+                "推定年齢：${_result!.age}歳",
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),            
             const SizedBox(height: 20),
             const Text(
               "顔写真から年齢を推定します",
@@ -66,12 +78,23 @@ class _HomeScreenState extends State<HomeScreen> {
     if (image != null) {
       //顔の切り出し
       final faces = await _faceDetectionService.detectFaces(image);      
-      debugPrint("顔の数: ${faces.length}");
       
-      setState(() {
-        _image = image;
-      });
-    }
+      if (faces.isNotEmpty) {
+        final croppedImage =
+          await _faceCropService.cropFace(
+          image,
+          faces.first.boundingBox,
+        );
+
+        setState(() {
+          _image = croppedImage;
+          _result = const AgeResult(
+          age: 0,
+          confidence: 0,
+          );
+        });
+      }
+    }    
   }
   
   @override
@@ -79,4 +102,5 @@ class _HomeScreenState extends State<HomeScreen> {
     _faceDetectionService.dispose();
     super.dispose();
   }
+
 }

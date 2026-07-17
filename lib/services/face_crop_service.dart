@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 
 class FaceCropService {
 
@@ -13,7 +14,7 @@ class FaceCropService {
 
   }
 
-  Future<img.Image?> cropFace(
+  Future<File?> cropFace(
     File imageFile,
     Rect boundingBox,
   ) async {
@@ -42,6 +43,16 @@ class FaceCropService {
       height: height,
     );
 
-    return cropped;
+    final tempDir = await getTemporaryDirectory();
+
+    final croppedFile = File(
+      '${tempDir.path}/cropped_face.png',
+    );
+
+    await croppedFile.writeAsBytes(
+      img.encodePng(cropped),
+    );
+
+    return croppedFile;
   }
 }
