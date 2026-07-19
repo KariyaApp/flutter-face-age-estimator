@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/material.dart';
 
 class FaceCropService {
 
@@ -43,6 +44,16 @@ class FaceCropService {
       height: height,
     );
 
+    final resized = img.copyResize(
+      cropped,
+      width: 224,
+      height: 224,
+    );
+
+    debugPrint(
+      "Crop Size: ${cropped.width} x ${cropped.height}",
+    );
+
     final tempDir = await getTemporaryDirectory();
 
     final croppedFile = File(
@@ -50,9 +61,11 @@ class FaceCropService {
     );
 
     await croppedFile.writeAsBytes(
-      img.encodePng(cropped),
+      img.encodePng(resized),
     );
-
+    print(
+      "Resize Size: ${resized.width} x ${resized.height}",
+    );
     return croppedFile;
   }
 }
