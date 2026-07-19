@@ -108,11 +108,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _initialize();
+    _loadModel();
   }
 
-  Future<void> _initialize() async {
-    await _ageEstimationService.initialize();
+  Future<void> _loadModel() async {
+    await _ageEstimationService.loadModel();
   }
   
 }
