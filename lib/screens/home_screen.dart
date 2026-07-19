@@ -4,6 +4,7 @@ import '../services/image_service.dart';
 import '../services/face_detection_service.dart';
 import '../models/age_result.dart';
 import '../services/face_crop_service.dart';
+import '../services/age_estimation_service.dart';
 
 class HomeScreen extends StatefulWidget {
 
@@ -17,6 +18,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final _imageService = ImageService();
   final _faceDetectionService = FaceDetectionService();
   final _faceCropService = FaceCropService();
+  final _ageEstimationService = AgeEstimationService();
 
   File? _image;
   AgeResult? _result;
@@ -103,4 +105,14 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
+  @override
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await _ageEstimationService.initialize();
+  }
+  
 }
