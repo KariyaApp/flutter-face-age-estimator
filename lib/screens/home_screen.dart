@@ -88,13 +88,24 @@ class _HomeScreenState extends State<HomeScreen> {
           faces.first.boundingBox,
         );
 
-        setState(() {
-          _image = croppedImage;
-          _result = const AgeResult(
-          age: 0,
-          confidence: 0,
+        if (croppedImage != null) {
+
+          setState(() {
+            _image = croppedImage;
+          });
+
+          final age =
+              await _ageEstimationService.predictAge(
+                croppedImage.path,
           );
-        });
+
+          setState(() {
+            _result = AgeResult(
+            age: age,
+            confidence: 1.0,
+            );
+          });
+        }
       }
     }    
   }
@@ -108,11 +119,9 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _loadModel();
+    //_loadModel();
   }
 
-  Future<void> _loadModel() async {
-    await _ageEstimationService.loadModel();
-  }
+ 
   
 }
